@@ -1,10 +1,12 @@
 package com.bisheralmasri.bsm;
 
 import com.bisheralmasri.bsm.blockentity.ModBlockEntities;
+import com.bisheralmasri.bsm.blockentity.StorageBlockEntity;
 import com.bisheralmasri.bsm.blocks.ModBlocks;
 import com.bisheralmasri.bsm.client.StorageScreen;
 import com.bisheralmasri.bsm.items.ModItems;
 import com.bisheralmasri.bsm.menu.ModMenus;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import org.slf4j.Logger;
 
@@ -48,6 +50,7 @@ public class BSM {
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::addCreative);
         modEventBus.addListener(this::registerScreens);
+        modEventBus.addListener(StorageBlockEntity::registerCapabilities);
 
         ModItems.ITEMS.register(modEventBus);
         ModBlocks.BLOCKS.register(modEventBus);
