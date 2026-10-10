@@ -46,7 +46,7 @@ public class StorageBlockEntity extends BlockEntity implements MenuProvider {
 
     @Override
     public @NotNull Component getDisplayName() {
-        return Component.literal("Storage");
+        return Component.literal("Storage Controller");
     }
 
     @Override

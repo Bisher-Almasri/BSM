@@ -13,7 +13,27 @@ public class StorageScreen extends AbstractContainerScreen<StorageMenu> {
     private static final int BORDER_COLOR = 0xFF414956;
     private static final int ACCENT_COLOR = 0xFF55B8A6;
 
+    private static final int SLOT_SIZE = 18;
+    private static final int SLOT_COLUMNS = 9;
+    private static final int SLOT_ROWS = 3;
+    private static final int SLOT_PADDING = 8;
+
+    private static final int TITLE_HEIGHT = 18;
+    private static final int SECTION_SPACING = 14;
+    private static final int HOTBAR_SPACING = 4;
+    private static final int BOTTOM_PADDING = 7;
+
+    private static final int TITLE_X = SLOT_PADDING;
+    private static final int TITLE_Y = 5;
+    private static final int INVENTOY_LABEL_OFFSET = 10;
+
+    private static final int PANEL_WIDTH = SLOT_PADDING * 2 + SLOT_COLUMNS * SLOT_SIZE;
+
     private final int storageRows;
+
+    private final int storageStartY = TITLE_HEIGHT;
+    private final int inventoryStartY;
+    private final int hotbarStartY;
 
     public StorageScreen(
             StorageMenu menu,
@@ -22,14 +42,20 @@ public class StorageScreen extends AbstractContainerScreen<StorageMenu> {
     ) {
         super(menu, playerInventory, title);
 
-        this.storageRows = (menu.getStorageSlotCount() + 8) / 9;
+        this.storageRows = (menu.getStorageSlotCount() + SLOT_COLUMNS-1) / SLOT_COLUMNS;
+
+        this.inventoryStartY = storageStartY + storageRows * SLOT_SIZE + SECTION_SPACING;
+
+        this.hotbarStartY = inventoryStartY + SLOT_ROWS * SLOT_SIZE + HOTBAR_SPACING;
 
 
-        this.imageWidth = 176;
-        this.imageHeight = 18 + storageRows * 18 + 18 + 3 * 18 + 4 + 18 + 7;
+        this.imageWidth = PANEL_WIDTH;
+        this.imageHeight = hotbarStartY
+                + SLOT_SIZE
+                + BOTTOM_PADDING;
 
-        int playerInvY = 18 + storageRows * 18 + 14;
-        this.inventoryLabelY = playerInvY - 10;
+        this.inventoryLabelY =
+                inventoryStartY - INVENTOY_LABEL_OFFSET;
     }
 
     @Override
@@ -42,61 +68,61 @@ public class StorageScreen extends AbstractContainerScreen<StorageMenu> {
         int x = leftPos;
         int y = topPos;
 
-        graphics.fill(
-                x,y,
-                x+imageWidth, y+imageHeight,
-                PANEL_COLOR
-        );
+        int right = x+imageWidth;
+        int bottom = y+imageHeight;
 
-        graphics.fill(x, y, x + imageWidth, y + 1, BORDER_COLOR);
-        graphics.fill(x, y + imageHeight - 1, x + imageWidth, y + imageHeight, BORDER_COLOR);
-        graphics.fill(x, y, x + 1, y + imageHeight, BORDER_COLOR);
-        graphics.fill(x + imageWidth - 1, y, x + imageWidth, y + imageHeight, BORDER_COLOR);
+        graphics.fill(x,y, right, bottom, PANEL_COLOR);
 
-        graphics.fill(
-                x+8, y+16,
-                x+imageWidth - 8, y+17,
-                ACCENT_COLOR
-        );
+        graphics.fill(x, y, right, y + 1, BORDER_COLOR);
+        graphics.fill(x, bottom - 1, right, bottom, BORDER_COLOR);
+        graphics.fill(x, y, x + 1, bottom, BORDER_COLOR);
+        graphics.fill(right - 1, y, right, bottom, BORDER_COLOR);
 
+//        graphics.fill(
+//                x+8, y+16,
+//                x+imageWidth - 8, y+17,
+//                ACCENT_COLOR
+//        );
+
+        // storage
         for (int i = 0; i < menu.getStorageSlotCount(); i++) {
-            int col = i % 9;
-            int row = i / 9;
+            int col = i % SLOT_COLUMNS;
+            int row = i / SLOT_COLUMNS;
 
             drawSlot(
                     graphics,
-                    x+8 + col*18,
-                    y+18 + row*18
+                    x+SLOT_PADDING + col*SLOT_SIZE,
+                    y+storageStartY + row*SLOT_SIZE
             );
         }
 
-        int playerInvY = 18 + storageRows * 18 + 14;
-
-        for (int row = 0; row < 3; row++) {
-            for (int col = 0; col < 9; col++) {
+        // inventory
+        for (int row = 0; row < SLOT_ROWS; row++) {
+            for (int col = 0; col < SLOT_COLUMNS; col++) {
                 drawSlot(
                         graphics,
-                        x + 8 + col * 18,
-                        y + playerInvY + row * 18
+                        x + SLOT_PADDING + col * SLOT_SIZE,
+                        y + inventoryStartY + row * SLOT_SIZE
                 );
             }
         }
 
-        int hotbarY = playerInvY + 3 * 18 + 4;
-
+        // hotbar
         for (int col = 0; col < 9; col++) {
             drawSlot(
                     graphics,
-                    x + 8 + col * 18,
-                    y + hotbarY
+                    x + SLOT_PADDING + col * SLOT_SIZE,
+                    y + hotbarStartY
             );
         }
 
     }
 
     private void drawSlot(GuiGraphics graphics, int x, int y) {
-        graphics.fill(x, y, x+18, y+18, BORDER_COLOR);
-        graphics.fill(x, y, x+17, y+17, SLOT_COLOR);
+        int slotRight = x + SLOT_SIZE;
+        int slotBottom = y + SLOT_SIZE;
+        graphics.fill(x, y, slotRight, slotBottom, BORDER_COLOR);
+        graphics.fill(x, y, slotRight-1, slotBottom-1, SLOT_COLOR);
     }
 
     @Override
@@ -104,8 +130,8 @@ public class StorageScreen extends AbstractContainerScreen<StorageMenu> {
         graphics.drawString(
                 font,
                 title,
-                8,
-                5,
+                TITLE_X,
+                TITLE_Y,
                 0xFFFFFFFF,
                 false
         );
@@ -113,7 +139,7 @@ public class StorageScreen extends AbstractContainerScreen<StorageMenu> {
         graphics.drawString(
                 font,
                 playerInventoryTitle,
-                8,
+                SLOT_PADDING,
                 inventoryLabelY,
                 0xFFB8C2D1,
                 false

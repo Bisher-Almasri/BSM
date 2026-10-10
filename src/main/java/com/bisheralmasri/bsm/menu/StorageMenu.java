@@ -92,32 +92,60 @@ public class StorageMenu extends AbstractContainerMenu {
     }
 
     @Override
-    public ItemStack quickMoveStack(Player player, int index) {
-        ItemStack result = ItemStack.EMPTY;
-        Slot slot = slots.get(index);
+    public @NotNull ItemStack quickMoveStack(@NotNull Player player, int index) {
+        if (index < 0 || index>=slots.size()) {
+            return ItemStack.EMPTY;
+        }
 
-        if (!slot.hasItem()) return result;
-        ItemStack stack = slot.getItem();
-        result = stack.copy();
+        Slot sourceSlot = slots.get(index);
+        if (!sourceSlot.hasItem()) {
+            return ItemStack.EMPTY;
+        }
+
+        ItemStack sourceStack = sourceSlot.getItem();
+        ItemStack originalStack = sourceStack.copy();
 
         int playerStart = storageSlotCount;
         int playerEnd = storageSlotCount + 36;
-        if (index < storageSlotCount) {
-            if (!moveItemStackTo(stack, playerStart, playerEnd, true)) {
+
+        if (index < playerStart) {
+            // storage -> player
+            ItemStack transferStack = sourceStack.copy();
+
+            if (!moveItemStackTo(transferStack, playerStart, playerEnd, true)) {
                 return ItemStack.EMPTY;
             }
+
+            // might do 64 not all, all if press space (ae2 like), but for now il keep it a is to avoid complexity
+            int moved = sourceStack.getCount() - transferStack.getCount();
+            if (moved <= 0) {
+                return ItemStack.EMPTY;
+            }
+
+            ItemStack extracted = itemHandler.extractItem(index, moved, false);
+
+            if (extracted.getCount() != moved) {
+                throw new IllegalStateException(
+                        "Storage extraction mismatch: expected: " + moved + ", got "  + extracted.getCount()
+                );
+            }
+
+            sourceSlot.setChanged();
         } else {
-            if (!moveItemStackTo(stack, 0, storageSlotCount, false)) {
+            ItemStack remainder = itemHandler.insertItem(
+                    0,
+                    sourceStack,
+                    false
+            );
+
+            sourceSlot.set(remainder);
+
+            if (remainder.getCount() == originalStack.getCount()) {
                 return ItemStack.EMPTY;
             }
         }
 
-        if (stack.isEmpty()) {
-            slot.set(ItemStack.EMPTY);
-        } else {
-            slot.setChanged();
-        }
-        return result;
+        return originalStack;
     }
 
     @Override
