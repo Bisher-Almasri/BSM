@@ -16,22 +16,31 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.energy.EnergyStorage;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 import org.jetbrains.annotations.NotNull;
 
 public class ControllerBlockEntity extends BlockEntity implements MenuProvider {
     private static final long DEFAULT_CAPACITY = (long) Integer.MAX_VALUE * 27;
 
-    private final StorageItemHandler itemHandler = new StorageItemHandler(new Storage(DEFAULT_CAPACITY));
+    private final ControllerEnergyStorage energyStorage = new ControllerEnergyStorage(this::setChanged);
+
+    private static final int ENERGY_PER_TICK = 100;
+
+    private final StorageItemHandler itemHandler = new StorageItemHandler(
+            new Storage(DEFAULT_CAPACITY)
+    );
 
     public ControllerBlockEntity(BlockPos pos, BlockState state) {
-        super(ModBlockEntities.STORAGE.get(), pos, state);
+        super(ModBlockEntities.CONTROLLER.get(), pos, state);
         itemHandler.setOnChanged(this::setChanged);
+        itemHandler.setActive(() -> energyStorage.getEnergyStored() > 0);
     }
 
     public static void registerCapabilities(RegisterCapabilitiesEvent event) {
         event.registerBlockEntity(
                 Capabilities.ItemHandler.BLOCK,
-                ModBlockEntities.STORAGE.get(),
+                ModBlockEntities.CONTROLLER.get(),
                 (be, side) -> be.itemHandler
         );
     }
@@ -55,6 +64,7 @@ public class ControllerBlockEntity extends BlockEntity implements MenuProvider {
             @NotNull Inventory playerInventory,
             @NotNull Player player
     ) {
+        if (energyStorage.getEnergyStored() <= 0) return null;
         assert level != null;
         return new StorageMenu(
                 containerId,
@@ -68,6 +78,7 @@ public class ControllerBlockEntity extends BlockEntity implements MenuProvider {
     protected void saveAdditional(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider registries) {
         super.saveAdditional(tag, registries);
         tag.put("Storage", getStorage().save(registries));
+        tag.put("Energy",  energyStorage.save());
     }
 
     @Override
@@ -75,6 +86,20 @@ public class ControllerBlockEntity extends BlockEntity implements MenuProvider {
         super.loadAdditional(tag, registries);
         if (tag.contains("Storage")) {
             getStorage().load(tag.getCompound("Storage"), registries);
+        }
+        if (tag.contains("Energy")) {
+            energyStorage.load(tag.getCompound("Energy"));
+        }
+    }
+
+    public IEnergyStorage getEnergyStorage() {
+        return energyStorage;
+    }
+
+    public void serverTick() {
+        if (energyStorage.getEnergyStored() >= ENERGY_PER_TICK) {
+            energyStorage.extractEnergy(ENERGY_PER_TICK, false);
+            setChanged();
         }
     }
 }

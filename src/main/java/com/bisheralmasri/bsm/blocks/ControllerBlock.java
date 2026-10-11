@@ -11,6 +11,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
@@ -25,7 +27,7 @@ public class ControllerBlock extends BaseEntityBlock {
 
     @Override
     public @Nullable BlockEntity newBlockEntity(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
-        return ModBlockEntities.STORAGE.get().create(blockPos, blockState);
+        return ModBlockEntities.CONTROLLER.get().create(blockPos, blockState);
     }
 
 
@@ -52,5 +54,12 @@ public class ControllerBlock extends BaseEntityBlock {
     @Override
     protected @NotNull MapCodec<? extends BaseEntityBlock> codec() {
         return CODEC;
+    }
+
+    @Override
+    public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, @NotNull BlockEntityType<T> blockEntityType) {
+        if (level.isClientSide) return null;
+        return createTickerHelper(blockEntityType, ModBlockEntities.CONTROLLER.get(),
+                ((lvl, pos, blockState, blockEntity) -> blockEntity.serverTick()));
     }
 }

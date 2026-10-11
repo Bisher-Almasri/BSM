@@ -7,6 +7,7 @@ import net.minecraft.world.item.Item;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.BooleanSupplier;
 
 // java needs typedef, im tired of writing Map.Entry<ItemKey<?>, Long> over and over and over
 
@@ -14,10 +15,12 @@ public class StorageItemHandler implements IItemHandlerModifiable {
     public final Storage storage;
     private final int fixedSlots;
     private Runnable onChanged = () -> {};
+    private BooleanSupplier active = () -> true;
 
     public StorageItemHandler(Storage storage, int fixedSlots) {
         this.storage = storage;
         this.fixedSlots = fixedSlots;
+
     }
 
     public StorageItemHandler(Storage storage) {
@@ -26,6 +29,14 @@ public class StorageItemHandler implements IItemHandlerModifiable {
 
     public void setOnChanged(Runnable onChanged) {
         this.onChanged = onChanged;
+    }
+
+    public void setActive(BooleanSupplier active) {
+        this.active = active;
+    }
+
+    public BooleanSupplier getActive() {
+        return active;
     }
 
     private List<Map.Entry<ItemKey<?>, Long>> entries() {
@@ -68,11 +79,12 @@ public class StorageItemHandler implements IItemHandlerModifiable {
     @Override
     public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
         if (stack.isEmpty()) return ItemStack.EMPTY;
+        if (!active.getAsBoolean()) return stack;
 
         long inserted = storage.insert(stack, simulate);
         int remainder = (int) (stack.getCount() - inserted);
 
-        if (!simulate && inserted > 0) onChanged.run();
+        if (!simulate && inserted > 0 && active.getAsBoolean()) onChanged.run();
 
         if (remainder <= 0) return ItemStack.EMPTY;
         ItemStack leftover = stack.copy();
@@ -82,7 +94,7 @@ public class StorageItemHandler implements IItemHandlerModifiable {
 
     @Override
     public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
-        if (amount <= 0) return ItemStack.EMPTY;
+        if (amount <= 0 && !active.getAsBoolean()) return ItemStack.EMPTY;
 
         List<Map.Entry<ItemKey<?>, Long>> snapshot = entries();
         if (slot < 0 || slot >= snapshot.size()) return ItemStack.EMPTY;
@@ -93,7 +105,7 @@ public class StorageItemHandler implements IItemHandlerModifiable {
         long extracted = storage.extract(key, amount, simulate);
         if (extracted <= 0) return ItemStack.EMPTY;
 
-        if (!simulate) onChanged.run();
+        if (!simulate && active.getAsBoolean()) onChanged.run();
 
         return key.toStack((int) extracted);
     }

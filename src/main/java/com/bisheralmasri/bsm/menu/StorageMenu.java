@@ -65,6 +65,19 @@ public class StorageMenu extends AbstractContainerMenu {
                 public int getMaxStackSize(@NotNull ItemStack stack) {
                     return Integer.MAX_VALUE;
                 }
+
+                @Override
+                public boolean mayPickup(@NotNull Player playerIn) {
+                    if (itemHandler.getActive().getAsBoolean()) return super.mayPickup(playerIn);
+                    return false;
+                }
+
+                @Override
+                public boolean mayPlace(@NotNull ItemStack stack) {
+                    if (itemHandler.getActive().getAsBoolean()) return super.mayPlace(stack);
+                    return false;
+
+                }
             });
         }
 
@@ -150,7 +163,7 @@ public class StorageMenu extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(@NotNull Player player) {
-        return stillValid(access, player, ModBlockEntities.STORAGE.get().getValidBlocks().stream()
+        return stillValid(access, player, ModBlockEntities.CONTROLLER.get().getValidBlocks().stream()
                 .findFirst().orElseThrow());
     }
 

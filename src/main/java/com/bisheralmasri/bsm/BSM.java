@@ -6,6 +6,9 @@ import com.bisheralmasri.bsm.blocks.ModBlocks;
 import com.bisheralmasri.bsm.client.StorageScreen;
 import com.bisheralmasri.bsm.items.ModItems;
 import com.bisheralmasri.bsm.menu.ModMenus;
+import net.neoforged.bus.api.Event;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import org.slf4j.Logger;
 
@@ -34,6 +37,7 @@ public class BSM {
         modEventBus.addListener(this::addCreative);
         modEventBus.addListener(this::registerScreens);
         modEventBus.addListener(ControllerBlockEntity::registerCapabilities);
+        modEventBus.addListener(this::registerCapabilities);
 
         ModItems.ITEMS.register(modEventBus);
         ModBlocks.BLOCKS.register(modEventBus);
@@ -47,6 +51,15 @@ public class BSM {
                 Config.SPEC
         );
     }
+
+    private void registerCapabilities(RegisterCapabilitiesEvent event) {
+        event.registerBlockEntity(
+                Capabilities.EnergyStorage.BLOCK,
+                ModBlockEntities.CONTROLLER.get(),
+                (blockEntity, side) -> blockEntity.getEnergyStorage()
+        );
+    }
+
     private void commonSetup(FMLCommonSetupEvent event) {
 //        Config.ITEM_STRINGS.get().forEach((item) -> LOGGER.info("ITEM >> {}", item));
     }
