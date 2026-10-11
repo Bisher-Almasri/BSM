@@ -10,9 +10,9 @@ public class ModItems {
     public static final DeferredRegister.Items ITEMS =
             DeferredRegister.createItems(BSM.MODID);
 
-    public static final DeferredItem<BlockItem> STORAGE =
+    public static final DeferredItem<BlockItem> CONTROLLER =
             ITEMS.registerSimpleBlockItem(
-                    "storage",
-                    ModBlocks.STORAGE
+                    "controller",
+                    ModBlocks.CONTROLLER
             );
 }

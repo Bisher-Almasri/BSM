@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": { "model":  "bsm:block/controller" }
+  }
+}

@@ -1,30 +1,17 @@
 package com.bisheralmasri.bsm;
 
 import com.bisheralmasri.bsm.blockentity.ModBlockEntities;
-import com.bisheralmasri.bsm.blockentity.StorageBlockEntity;
+import com.bisheralmasri.bsm.blockentity.ControllerBlockEntity;
 import com.bisheralmasri.bsm.blocks.ModBlocks;
 import com.bisheralmasri.bsm.client.StorageScreen;
 import com.bisheralmasri.bsm.items.ModItems;
 import com.bisheralmasri.bsm.menu.ModMenus;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
 
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.MapColor;
-import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
@@ -34,10 +21,6 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
-import net.neoforged.neoforge.registries.DeferredBlock;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredItem;
-import net.neoforged.neoforge.registries.DeferredRegister;
 
 
 @Mod(BSM.MODID)
@@ -50,7 +33,7 @@ public class BSM {
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::addCreative);
         modEventBus.addListener(this::registerScreens);
-        modEventBus.addListener(StorageBlockEntity::registerCapabilities);
+        modEventBus.addListener(ControllerBlockEntity::registerCapabilities);
 
         ModItems.ITEMS.register(modEventBus);
         ModBlocks.BLOCKS.register(modEventBus);
@@ -70,7 +53,7 @@ public class BSM {
 
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) {
-            event.accept(ModItems.STORAGE);
+            event.accept(ModItems.CONTROLLER);
         }
     }
 

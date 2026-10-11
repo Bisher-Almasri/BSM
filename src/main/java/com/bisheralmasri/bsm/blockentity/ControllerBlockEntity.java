@@ -18,12 +18,12 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class StorageBlockEntity extends BlockEntity implements MenuProvider {
+public class ControllerBlockEntity extends BlockEntity implements MenuProvider {
     private static final long DEFAULT_CAPACITY = (long) Integer.MAX_VALUE * 27;
 
     private final StorageItemHandler itemHandler = new StorageItemHandler(new Storage(DEFAULT_CAPACITY));
 
-    public StorageBlockEntity(BlockPos pos, BlockState state) {
+    public ControllerBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.STORAGE.get(), pos, state);
         itemHandler.setOnChanged(this::setChanged);
     }
@@ -46,7 +46,7 @@ public class StorageBlockEntity extends BlockEntity implements MenuProvider {
 
     @Override
     public @NotNull Component getDisplayName() {
-        return Component.literal("Storage Controller");
+        return Component.literal("Controller");
     }
 
     @Override

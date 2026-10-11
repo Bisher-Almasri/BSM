@@ -34,10 +34,11 @@ public class StorageItemHandler implements IItemHandlerModifiable {
 
     @Override
     public int getSlots() {
-        if (fixedSlots == -1) {
-            return Math.max(9, entries().size()+1);
+        if (fixedSlots != -1) {
+            return fixedSlots;
         }
-        return fixedSlots;
+
+        return (entries().size() / 9 + 1) * 9;
     }
 
     @Override

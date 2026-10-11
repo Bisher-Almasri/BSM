@@ -149,7 +149,7 @@ public class StorageMenu extends AbstractContainerMenu {
     }
 
     @Override
-    public boolean stillValid(Player player) {
+    public boolean stillValid(@NotNull Player player) {
         return stillValid(access, player, ModBlockEntities.STORAGE.get().getValidBlocks().stream()
                 .findFirst().orElseThrow());
     }

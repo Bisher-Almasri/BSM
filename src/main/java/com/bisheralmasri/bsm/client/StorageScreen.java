@@ -11,7 +11,7 @@ public class StorageScreen extends AbstractContainerScreen<StorageMenu> {
     private static final int PANEL_COLOR = 0xFF20242B;
     private static final int SLOT_COLOR = 0xFF101318;
     private static final int BORDER_COLOR = 0xFF414956;
-    private static final int ACCENT_COLOR = 0xFF55B8A6;
+//    private static final int ACCENT_COLOR = 0xFF55B8A6;
 
     private static final int SLOT_SIZE = 18;
     private static final int SLOT_COLUMNS = 9;
@@ -25,11 +25,9 @@ public class StorageScreen extends AbstractContainerScreen<StorageMenu> {
 
     private static final int TITLE_X = SLOT_PADDING;
     private static final int TITLE_Y = 5;
-    private static final int INVENTOY_LABEL_OFFSET = 10;
+    private static final int INVENTORY_LABEL_OFFSET = 10;
 
     private static final int PANEL_WIDTH = SLOT_PADDING * 2 + SLOT_COLUMNS * SLOT_SIZE;
-
-    private final int storageRows;
 
     private final int storageStartY = TITLE_HEIGHT;
     private final int inventoryStartY;
@@ -42,7 +40,7 @@ public class StorageScreen extends AbstractContainerScreen<StorageMenu> {
     ) {
         super(menu, playerInventory, title);
 
-        this.storageRows = (menu.getStorageSlotCount() + SLOT_COLUMNS-1) / SLOT_COLUMNS;
+        int storageRows = (menu.getStorageSlotCount() + SLOT_COLUMNS - 1) / SLOT_COLUMNS;
 
         this.inventoryStartY = storageStartY + storageRows * SLOT_SIZE + SECTION_SPACING;
 
@@ -55,7 +53,7 @@ public class StorageScreen extends AbstractContainerScreen<StorageMenu> {
                 + BOTTOM_PADDING;
 
         this.inventoryLabelY =
-                inventoryStartY - INVENTOY_LABEL_OFFSET;
+                inventoryStartY - INVENTORY_LABEL_OFFSET;
     }
 
     @Override

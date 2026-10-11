@@ -14,12 +14,12 @@ public class ModBlockEntities {
                     BSM.MODID
             );
 
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<StorageBlockEntity>> STORAGE =
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ControllerBlockEntity>> STORAGE =
             BLOCK_ENTITIES.register(
-                    "storage",
+                    "controller",
                     () -> BlockEntityType.Builder.of(
-                            StorageBlockEntity::new,
-                            ModBlocks.STORAGE.get()
+                            ControllerBlockEntity::new,
+                            ModBlocks.CONTROLLER.get()
                     ).build(null)
 
             );

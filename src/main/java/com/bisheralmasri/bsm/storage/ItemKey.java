@@ -1,7 +1,7 @@
 package com.bisheralmasri.bsm.storage;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+//import com.mojang.serialization.Codec;
+//import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -27,14 +27,14 @@ public record ItemKey<T>(T value, DataComponentMap components) {
         throw new IllegalStateException("Cannot convert non-Item key type to an ItemStack!");
     }
 
-    // least cursed java code
-    public static <T> Codec<ItemKey<T>> codec(Codec<T> valueCodec) {
-        return RecordCodecBuilder.create(instance ->
-                instance.group(
-                        valueCodec.fieldOf("value").forGetter(ItemKey::value),
-                        DataComponentMap.CODEC.fieldOf("components").forGetter(ItemKey::components)
-                ).apply(instance, ItemKey::new));
-    }
+    // least cursed Java code
+//    public static <T> Codec<ItemKey<T>> codec(Codec<T> valueCodec) {
+//        return RecordCodecBuilder.create(instance ->
+//                instance.group(
+//                        valueCodec.fieldOf("value").forGetter(ItemKey::value),
+//                        DataComponentMap.CODEC.fieldOf("components").forGetter(ItemKey::components)
+//                ).apply(instance, ItemKey::new));
+//    }
 
 
 }

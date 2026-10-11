@@ -1,13 +1,6 @@
 {
   "itemGroup.bsm": "Example Mod Tab",
-  "block.bsm.example_block": "Example Block",
-  "item.bsm.example_item": "Example Item",
+  "block.bsm.controller": "Storage Controller",
 
-  "bsm.configuration.title": "BSM Configs",
-  "bsm.configuration.section.bsm.common.toml": "BSM Configs",
-  "bsm.configuration.section.bsm.common.toml.title": "BSM Configs",
-  "bsm.configuration.items": "Item List",
-  "bsm.configuration.logDirtBlock": "Log Dirt Block",
-  "bsm.configuration.magicNumberIntroduction": "Magic Number Text",
-  "bsm.configuration.magicNumber": "Magic Number"
+  "bsm.configuration.title": "BSM Configs"
 }

@@ -10,10 +10,10 @@ public class ModBlocks {
     public static final DeferredRegister.Blocks BLOCKS =
             DeferredRegister.createBlocks(BSM.MODID);
 
-    public static final DeferredBlock<StorageBlock> STORAGE =
+    public static final DeferredBlock<ControllerBlock> CONTROLLER =
             BLOCKS.register(
-                    "storage",
-                    () -> new StorageBlock(
+                    "controller",
+                    () -> new ControllerBlock(
                             BlockBehaviour.Properties.of()
                                     .mapColor(MapColor.METAL)
                                     .strength(2.5F)
