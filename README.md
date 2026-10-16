@@ -27,3 +27,6 @@ BSM requires Minecraft 1.21.1, Java 21, and NeoForge for Minecraft 1.21.1. This 
 (optional)
 3. Copy `build/libs/bsm-1.0.0.jar` into the `mods` folder for the NeoForge instance you want to use. Create the folder if it does not exist. For the default Minecraft directory, it is `.minecraft/mods`; launcher-managed instances may have their own `mods` folder.
 4. Launch Minecraft using the NeoForge profile.
+
+# for reviewers in terra
+to test the mod place an inifinite energy cube from mekanism or equivalent next to the block 
